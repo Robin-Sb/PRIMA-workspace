@@ -24,7 +24,7 @@ namespace L04_Snake3D {
       let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrGray);
       cube.addComponent(cmpMaterial);
       cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
-      cube.mtxLocal.scale(new ƒ.Vector3(scalar, scalar, scalar));
+      cube.mtxLocal.scale(ƒ.Vector3.ONE(scalar));
 
       main.appendChild(cube);
       main.appendChild(snake);

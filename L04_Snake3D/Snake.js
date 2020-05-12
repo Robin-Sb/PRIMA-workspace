@@ -7,7 +7,6 @@ var L04_Snake3D;
             super("Snake");
             this.directions = [ƒ.Vector3.X(), ƒ.Vector3.X(), ƒ.Vector3.X(), ƒ.Vector3.X()];
             this.currentFace = "front";
-            this.snake = this;
             this.createSegments(4);
             this.fillMappingTable();
             console.log("create snake");
@@ -16,12 +15,11 @@ var L04_Snake3D;
             this.updateMappingTable();
             let transformValues = this.directionTable[this.currentFace];
             let currentDirection = this.directions[0].copy;
-            for (let i = 0; i < transformValues.functionArray.length; i++) {
-                if (transformValues.functionArray[i] > 4 && transformValues.functionArray[i] > 0) {
-                    let rotateMatrix = transformValues.directionTable[i].rotation;
+            for (let i = 0; i < transformValues.snakeCoordinates.length; i++) {
+                if (transformValues.snakeCoordinates[i] > 4 && transformValues.snakeCoordinates[i] > 0) {
+                    let rotationMatrix = transformValues.directionTable[i].rotation;
                     this.currentFace = transformValues.directionTable[i].newFace;
-                    currentDirection.transform(rotateMatrix);
-                    break;
+                    currentDirection.transform(rotationMatrix);
                 }
             }
             let children = this.getChildren();
@@ -42,12 +40,12 @@ var L04_Snake3D;
             let frontBack = [currentTrans.x, currentTrans.y, -currentTrans.x, -currentTrans.y];
             let leftRight = [currentTrans.y, currentTrans.z, -currentTrans.y, -currentTrans.z];
             let topBottom = [currentTrans.x, currentTrans.z, -currentTrans.x, -currentTrans.z];
-            this.directionTable["front"].functionArray = frontBack;
-            this.directionTable["back"].functionArray = frontBack;
-            this.directionTable["right"].functionArray = leftRight;
-            this.directionTable["left"].functionArray = leftRight;
-            this.directionTable["bottom"].functionArray = topBottom;
-            this.directionTable["top"].functionArray = topBottom;
+            this.directionTable["front"].snakeCoordinates = frontBack;
+            this.directionTable["back"].snakeCoordinates = frontBack;
+            this.directionTable["right"].snakeCoordinates = leftRight;
+            this.directionTable["left"].snakeCoordinates = leftRight;
+            this.directionTable["bottom"].snakeCoordinates = topBottom;
+            this.directionTable["top"].snakeCoordinates = topBottom;
         }
         fillMappingTable() {
             let currentTrans = this.getChildren()[0].mtxLocal.translation;
