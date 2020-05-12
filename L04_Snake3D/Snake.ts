@@ -1,7 +1,7 @@
 namespace L04_Snake3D {
-  import ƒ = FudgeCore;
-  export class Snake extends ƒ.Node {
-    public directions: Array<ƒ.Vector3> = [ƒ.Vector3.X(), ƒ.Vector3.X(), ƒ.Vector3.X(), ƒ.Vector3.X()];
+  import fudge = FudgeCore;
+  export class Snake extends fudge.Node {
+    public directions: Array<fudge.Vector3> = [fudge.Vector3.X(), fudge.Vector3.X(), fudge.Vector3.X(), fudge.Vector3.X()];
     public directionTable: Record<string, ArrayDTO>;
     public currentFace: string = "front";
 
@@ -15,21 +15,21 @@ namespace L04_Snake3D {
     public move(): void {
       this.updateMappingTable();
       let transformValues: ArrayDTO = this.directionTable[this.currentFace];
-      let currentDirection: ƒ.Vector3 = this.directions[0].copy;
+      let currentDirection: fudge.Vector3 = this.directions[0].copy;
 
       for (let i: number = 0; i < transformValues.snakeCoordinates.length; i++) {
         if (transformValues.snakeCoordinates[i] > 4 && transformValues.snakeCoordinates[i] > 0) {
-          let rotationMatrix: ƒ.Matrix4x4 = transformValues.directionTable[i].rotation;
+          let rotationMatrix: fudge.Matrix4x4 = transformValues.directionTable[i].rotation;
           this.currentFace = transformValues.directionTable[i].newFace;
           currentDirection.transform(rotationMatrix);
         }
       }
-      let children: ƒ.Node[] = this.getChildren();
+      let children: fudge.Node[] = this.getChildren();
 
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
+      if (fudge.Keyboard.isPressedOne([fudge.KEYBOARD_CODE.A])) {
         currentDirection.transform(transformValues.rotation.leftKey);
       }
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
+      if (fudge.Keyboard.isPressedOne([fudge.KEYBOARD_CODE.D])) {
         currentDirection.transform(transformValues.rotation.rightKey);
       }
       this.directions.unshift(currentDirection);
@@ -41,7 +41,7 @@ namespace L04_Snake3D {
     }
 
     private updateMappingTable(): void {
-      let currentTrans: ƒ.Vector3 = this.getChildren()[0].mtxLocal.translation;
+      let currentTrans: fudge.Vector3 = this.getChildren()[0].mtxLocal.translation;
       let frontBack: number[] = [currentTrans.x, currentTrans.y, -currentTrans.x, -currentTrans.y];
       let leftRight: number[] = [currentTrans.y, currentTrans.z, -currentTrans.y, -currentTrans.z];
       let topBottom: number[] = [currentTrans.x, currentTrans.z, -currentTrans.x, -currentTrans.z];
@@ -55,7 +55,7 @@ namespace L04_Snake3D {
     }
 
     private fillMappingTable(): void {
-      let currentTrans: ƒ.Vector3 = this.getChildren()[0].mtxLocal.translation;
+      let currentTrans: fudge.Vector3 = this.getChildren()[0].mtxLocal.translation;
       let frontBack: number[] = [currentTrans.x, currentTrans.y, -currentTrans.x, -currentTrans.y];
       let leftRight: number[] = [currentTrans.y, currentTrans.z, -currentTrans.y, -currentTrans.z];
       let topBottom: number[] = [currentTrans.x, currentTrans.z, -currentTrans.x, -currentTrans.z];
@@ -67,30 +67,30 @@ namespace L04_Snake3D {
       let back: string = "back";
 
       this.directionTable = {
-        front: new ArrayDTO(frontBack, new RotationsDTO(ƒ.Matrix4x4.ROTATION_Z(90), ƒ.Matrix4x4.ROTATION_Z(-90)), { 0: new DirectionDTO(right, ƒ.Matrix4x4.ROTATION_Y(90)), 1: new DirectionDTO(top, ƒ.Matrix4x4.ROTATION_X(-90)), 2: new DirectionDTO(left, ƒ.Matrix4x4.ROTATION_Y(-90)), 3: new DirectionDTO(bottom, ƒ.Matrix4x4.ROTATION_X(90)) }),
-        right: new ArrayDTO(leftRight, new RotationsDTO(ƒ.Matrix4x4.ROTATION_X(90), ƒ.Matrix4x4.ROTATION_X(-90)), { 0: new DirectionDTO(top, ƒ.Matrix4x4.ROTATION_Z(90)), 1: new DirectionDTO(front, ƒ.Matrix4x4.ROTATION_Y(-90)), 2: new DirectionDTO(bottom, ƒ.Matrix4x4.ROTATION_Z(-90)), 3: new DirectionDTO(back, ƒ.Matrix4x4.ROTATION_Y(90)) }),
-        top: new ArrayDTO(topBottom, new RotationsDTO(ƒ.Matrix4x4.ROTATION_Y(90), ƒ.Matrix4x4.ROTATION_Y(-90)), { 0: new DirectionDTO(right, ƒ.Matrix4x4.ROTATION_Z(-90)), 1: new DirectionDTO(front, ƒ.Matrix4x4.ROTATION_X(90)), 2: new DirectionDTO(left, ƒ.Matrix4x4.ROTATION_Z(90)), 3: new DirectionDTO(back, ƒ.Matrix4x4.ROTATION_X(-90)) }),
-        left: new ArrayDTO(leftRight, new RotationsDTO(ƒ.Matrix4x4.ROTATION_X(-90), ƒ.Matrix4x4.ROTATION_X(90)), { 0: new DirectionDTO(top, ƒ.Matrix4x4.ROTATION_Z(-90)), 1: new DirectionDTO(front, ƒ.Matrix4x4.ROTATION_Y(90)), 2: new DirectionDTO(bottom, ƒ.Matrix4x4.ROTATION_Z(90)), 3: new DirectionDTO(back, ƒ.Matrix4x4.ROTATION_Y(-90)) }),
-        back: new ArrayDTO(frontBack, new RotationsDTO(ƒ.Matrix4x4.ROTATION_Z(-90), ƒ.Matrix4x4.ROTATION_Z(90)), { 0: new DirectionDTO(right, ƒ.Matrix4x4.ROTATION_Y(-90)), 1: new DirectionDTO(top, ƒ.Matrix4x4.ROTATION_X(90)), 2: new DirectionDTO(left, ƒ.Matrix4x4.ROTATION_Y(90)), 3: new DirectionDTO(bottom, ƒ.Matrix4x4.ROTATION_X(-90)) }),
-        bottom: new ArrayDTO(topBottom, new RotationsDTO(ƒ.Matrix4x4.ROTATION_Y(-90), ƒ.Matrix4x4.ROTATION_Y(90)), { 0: new DirectionDTO(right, ƒ.Matrix4x4.ROTATION_Z(90)), 1: new DirectionDTO(front, ƒ.Matrix4x4.ROTATION_X(-90)), 2: new DirectionDTO(left, ƒ.Matrix4x4.ROTATION_Z(-90)), 3: new DirectionDTO(back, ƒ.Matrix4x4.ROTATION_X(90)) })
+        front: new ArrayDTO(frontBack, new RotationsDTO(fudge.Matrix4x4.ROTATION_Z(90), fudge.Matrix4x4.ROTATION_Z(-90)), { 0: new DirectionDTO(right, fudge.Matrix4x4.ROTATION_Y(90)), 1: new DirectionDTO(top, fudge.Matrix4x4.ROTATION_X(-90)), 2: new DirectionDTO(left, fudge.Matrix4x4.ROTATION_Y(-90)), 3: new DirectionDTO(bottom, fudge.Matrix4x4.ROTATION_X(90)) }),
+        right: new ArrayDTO(leftRight, new RotationsDTO(fudge.Matrix4x4.ROTATION_X(90), fudge.Matrix4x4.ROTATION_X(-90)), { 0: new DirectionDTO(top, fudge.Matrix4x4.ROTATION_Z(90)), 1: new DirectionDTO(front, fudge.Matrix4x4.ROTATION_Y(-90)), 2: new DirectionDTO(bottom, fudge.Matrix4x4.ROTATION_Z(-90)), 3: new DirectionDTO(back, fudge.Matrix4x4.ROTATION_Y(90)) }),
+        top: new ArrayDTO(topBottom, new RotationsDTO(fudge.Matrix4x4.ROTATION_Y(90), fudge.Matrix4x4.ROTATION_Y(-90)), { 0: new DirectionDTO(right, fudge.Matrix4x4.ROTATION_Z(-90)), 1: new DirectionDTO(front, fudge.Matrix4x4.ROTATION_X(90)), 2: new DirectionDTO(left, fudge.Matrix4x4.ROTATION_Z(90)), 3: new DirectionDTO(back, fudge.Matrix4x4.ROTATION_X(-90)) }),
+        left: new ArrayDTO(leftRight, new RotationsDTO(fudge.Matrix4x4.ROTATION_X(-90), fudge.Matrix4x4.ROTATION_X(90)), { 0: new DirectionDTO(top, fudge.Matrix4x4.ROTATION_Z(-90)), 1: new DirectionDTO(front, fudge.Matrix4x4.ROTATION_Y(90)), 2: new DirectionDTO(bottom, fudge.Matrix4x4.ROTATION_Z(90)), 3: new DirectionDTO(back, fudge.Matrix4x4.ROTATION_Y(-90)) }),
+        back: new ArrayDTO(frontBack, new RotationsDTO(fudge.Matrix4x4.ROTATION_Z(-90), fudge.Matrix4x4.ROTATION_Z(90)), { 0: new DirectionDTO(right, fudge.Matrix4x4.ROTATION_Y(-90)), 1: new DirectionDTO(top, fudge.Matrix4x4.ROTATION_X(90)), 2: new DirectionDTO(left, fudge.Matrix4x4.ROTATION_Y(90)), 3: new DirectionDTO(bottom, fudge.Matrix4x4.ROTATION_X(-90)) }),
+        bottom: new ArrayDTO(topBottom, new RotationsDTO(fudge.Matrix4x4.ROTATION_Y(-90), fudge.Matrix4x4.ROTATION_Y(90)), { 0: new DirectionDTO(right, fudge.Matrix4x4.ROTATION_Z(90)), 1: new DirectionDTO(front, fudge.Matrix4x4.ROTATION_X(-90)), 2: new DirectionDTO(left, fudge.Matrix4x4.ROTATION_Z(-90)), 3: new DirectionDTO(back, fudge.Matrix4x4.ROTATION_X(90)) })
       };
     }
 
     private createSegments(segments: Number): void {
-      let mesh: ƒ.MeshQuad = new ƒ.MeshQuad();
-      let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
+      let mesh: fudge.MeshCube = new fudge.MeshCube();
+      let mtrSolidWhite: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(fudge.Color.CSS("WHITE")));
 
       for (let i: number = 0; i < segments; i++) {
-        let node: ƒ.Node = new ƒ.Node("Quad");
+        let node: fudge.Node = new fudge.Node("Quad");
 
-        let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
+        let cmpMesh: fudge.ComponentMesh = new fudge.ComponentMesh(mesh);
         node.addComponent(cmpMesh);
-        cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.8));
+        cmpMesh.pivot.scale(fudge.Vector3.ONE(0.8));
 
-        let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
+        let cmpMaterial: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrSolidWhite);
         node.addComponent(cmpMaterial);
 
-        node.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(-1 * i, 0, 5))));
+        node.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(new fudge.Vector3(-1 * i, 0, 5))));
 
         this.appendChild(node);
       }

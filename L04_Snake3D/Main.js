@@ -1,40 +1,46 @@
 "use strict";
 var L04_Snake3D;
 (function (L04_Snake3D) {
-    var ƒ = FudgeCore;
+    var fudge = FudgeCore;
     window.addEventListener("load", hndLoad);
-    let main = new ƒ.Node("MainNode");
-    let cube = new ƒ.Node("Cube");
+    let main = new fudge.Node("MainNode");
+    let cube = new fudge.Node("Cube");
     let snake = new L04_Snake3D.Snake();
     let scalar = 9;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
-        ƒ.Debug.log(canvas);
-        let mesh = new ƒ.MeshCube();
-        let color = new ƒ.Color();
+        fudge.Debug.log(canvas);
+        let mesh = new fudge.MeshCube();
+        let color = new fudge.Color();
         color.setNormRGBA(0.3, 0.3, 0.3, 0);
-        let mtrGray = new ƒ.Material("Gray", ƒ.ShaderUniColor, new ƒ.CoatColored(color));
-        let cmpMesh = new ƒ.ComponentMesh(mesh);
+        let mtrGray = new fudge.Material("Gray", fudge.ShaderUniColor, new fudge.CoatColored(color));
+        let cmpMesh = new fudge.ComponentMesh(mesh);
         cube.addComponent(cmpMesh);
-        let cmpMaterial = new ƒ.ComponentMaterial(mtrGray);
+        let cmpMaterial = new fudge.ComponentMaterial(mtrGray);
         cube.addComponent(cmpMaterial);
-        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
-        cube.mtxLocal.scale(new ƒ.Vector3(scalar, scalar, scalar));
+        cube.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(new fudge.Vector3(0, 0, 0))));
+        cube.mtxLocal.scale(fudge.Vector3.ONE(scalar));
         main.appendChild(cube);
         main.appendChild(snake);
-        let cmpCamera = new ƒ.ComponentCamera();
+        let cmpCamera = new fudge.ComponentCamera();
         cmpCamera.pivot.translateZ(25);
-        cmpCamera.pivot.translate(new ƒ.Vector3(0, 0, 0));
+        cmpCamera.pivot.translate(new fudge.Vector3(0, 0, 0));
         cmpCamera.pivot.rotateY(180);
-        L04_Snake3D.viewport = new ƒ.Viewport();
+        L04_Snake3D.viewport = new fudge.Viewport();
         L04_Snake3D.viewport.initialize("Viewport", main, cmpCamera, canvas);
-        ƒ.Debug.log(L04_Snake3D.viewport);
-        ƒ.Loop.addEventListener("loopFrame", main_loop);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 8);
+        fudge.Debug.log(L04_Snake3D.viewport);
+        fudge.Loop.addEventListener("loopFrame", main_loop);
+        fudge.Loop.start(fudge.LOOP_MODE.TIME_REAL, 8);
     }
     function main_loop(_event) {
         snake.move();
+        moveCamera();
         L04_Snake3D.viewport.draw();
+    }
+    function moveCamera() {
+        let posCamera = fudge.Vector3.NORMALIZATION(snake.getChildren()[0].mtxLocal.translation, 30);
+        L04_Snake3D.viewport.camera.pivot.translation = posCamera;
+        L04_Snake3D.viewport.camera.pivot.lookAt(fudge.Vector3.ZERO());
     }
 })(L04_Snake3D || (L04_Snake3D = {}));
 //# sourceMappingURL=Main.js.map

@@ -1,48 +1,54 @@
 namespace L04_Snake3D {
-    import ƒ = FudgeCore;
+    import fudge = FudgeCore;
 
     window.addEventListener("load", hndLoad);
     // let snake: Snake = new Snake();
-    export let viewport: ƒ.Viewport;      
-    let main: ƒ.Node = new ƒ.Node("MainNode");
-    let cube: ƒ.Node = new ƒ.Node("Cube");
+    export let viewport: fudge.Viewport;      
+    let main: fudge.Node = new fudge.Node("MainNode");
+    let cube: fudge.Node = new fudge.Node("Cube");
     let snake: Snake = new Snake();
     let scalar: number = 9;
 
-  
     function hndLoad(_event: Event): void {
       const canvas: HTMLCanvasElement = document.querySelector("canvas");
-      ƒ.Debug.log(canvas);
+      fudge.Debug.log(canvas);
 
-      let mesh: ƒ.MeshCube = new ƒ.MeshCube();
-      let color: ƒ.Color = new ƒ.Color(); 
+      let mesh: fudge.MeshCube = new fudge.MeshCube();
+      let color: fudge.Color = new fudge.Color(); 
       color.setNormRGBA(0.3, 0.3, 0.3, 0);
-      let mtrGray: ƒ.Material = new ƒ.Material("Gray", ƒ.ShaderUniColor, new ƒ.CoatColored(color));
-      let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
+      let mtrGray: fudge.Material = new fudge.Material("Gray", fudge.ShaderUniColor, new fudge.CoatColored(color));
+      let cmpMesh: fudge.ComponentMesh = new fudge.ComponentMesh(mesh);
     
       cube.addComponent(cmpMesh);
-      let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrGray);
+      let cmpMaterial: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrGray);
       cube.addComponent(cmpMaterial);
-      cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
-      cube.mtxLocal.scale(ƒ.Vector3.ONE(scalar));
+      cube.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(new fudge.Vector3(0, 0, 0))));
+      cube.mtxLocal.scale(fudge.Vector3.ONE(scalar));
 
       main.appendChild(cube);
       main.appendChild(snake);
 
-      let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
+      let cmpCamera: fudge.ComponentCamera = new fudge.ComponentCamera();
       cmpCamera.pivot.translateZ(25);
-      cmpCamera.pivot.translate(new ƒ.Vector3(0, 0, 0));
+      cmpCamera.pivot.translate(new fudge.Vector3(0, 0, 0));
       cmpCamera.pivot.rotateY(180);
 
-      viewport = new ƒ.Viewport();
+      viewport = new fudge.Viewport();
       viewport.initialize("Viewport", main, cmpCamera, canvas);
-      ƒ.Debug.log(viewport);
-      ƒ.Loop.addEventListener("loopFrame", main_loop);
-      ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 8);
+      fudge.Debug.log(viewport);
+      fudge.Loop.addEventListener("loopFrame", main_loop);
+      fudge.Loop.start(fudge.LOOP_MODE.TIME_REAL, 8);
     }
 
     function main_loop(_event: Event): void {
         snake.move();
+        moveCamera();
         viewport.draw();
+    }
+
+    function moveCamera(): void {
+      let posCamera: fudge.Vector3 = fudge.Vector3.NORMALIZATION(snake.getChildren()[0].mtxLocal.translation, 30);
+      viewport.camera.pivot.translation = posCamera;
+      viewport.camera.pivot.lookAt(fudge.Vector3.ZERO());
     }
   } 
